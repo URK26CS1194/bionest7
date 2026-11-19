@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BioNest - Product Gallery</title>
+<style>
+  body { font-family: Arial, sans-serif; margin:0; background:#f5f7f1; color:#1d2b22; }
+  header { background:#2e5a3c; color:#fff; text-align:center; padding:18px 10px; }
+  header h1 { margin:0; }
+  .gallery { display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:16px; padding:20px; max-width:1000px; margin:auto; }
+  .gallery button { border:0; padding:0; background:none; cursor:pointer; text-align:left; }
+  .gallery img { width:100%; aspect-ratio:4/3; object-fit:cover; border-radius:8px; display:block; }
+  .gallery span { display:block; padding:6px 2px; font-weight:bold; }
+  .lightbox { display:none; position:fixed; inset:0; background:rgba(0,0,0,.85); align-items:center; justify-content:center; flex-direction:column; color:#fff; z-index:20; }
+  .lightbox.open { display:flex; }
+  .lightbox img { max-width:90%; max-height:75vh; border-radius:8px; }
+  .lightbox button { margin-top:12px; padding:8px 16px; cursor:pointer; }
+  @media (max-width: 600px) { .gallery { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<header><h1>BioNest Product Gallery</h1><p>Biodegradable packaging solutions</p></header>
+
+<main class="gallery" id="gallery"></main>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Product preview">
+  <img id="lbImg" src="" alt="image">
+  <p id="lbCap"></p>
+  <button id="lbClose" type="button">Close</button>
+</div>
+
+<script>
+  // Demo images are generated here. Replace "src" with real photos, e.g. images/mailer.jpg
+  const items = [
+    ["Compostable Mailers",src="compostable.png"], ["Molded Fibre Trays", src="molded.png"],
+    ["Plant-based Food Boxes", src="plantfood.png"], ["Biodegradable Films", src="film.png"],
+    ["Cornstarch Cutlery", src="cornstarch.png"], ["Paper Cup Sleeves", src="paper.png"]
+  ];
+  const svg = (c, t) => "data:image/svg+xml;utf8," + encodeURIComponent(
+    `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'><rect width='400' height='300' fill='${c}'></rect><text x='200' y='160' font-size='26' text-anchor='middle' fill='#1d2b22' font-family='Arial'>${t}</text></svg>`);
+
+  const gallery = document.getElementById("gallery");
+  items.forEach(([name, image]) => {
+    const b = document.createElement("button");
+    b.innerHTML = `<img src="${image}" alt="${name}"><span>${name}</span>`;
+    b.addEventListener("click", () => open(image, name));
+    gallery.appendChild(b);
+  });
+
+  const lb = document.getElementById("lightbox");
+  function open(src, name) {
+    document.getElementById("lbImg").src = src;
+    document.getElementById("lbImg").alt = name;
+    document.getElementById("lbCap").textContent = name;
+    lb.classList.add("open");
+    document.getElementById("lbClose").focus();
+  }
+  const close = () => lb.classList.remove("open");
+  document.getElementById("lbClose").addEventListener("click", close);
+  lb.addEventListener("click", e => { if (e.target === lb) close(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") close(); });
+</script>
+</body>
+</html>
